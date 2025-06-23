@@ -8,6 +8,7 @@ API_TOKEN = os.getenv("BOT_TOKEN")
 CHANNEL_ID = os.getenv("CHANNEL_ID")
 GIFT_URL = os.getenv("GIFT_URL")
 CHANNEL_LINK = os.getenv("CHANNEL_LINK")
+CHANNEL_USERNAME = os.getenv("CHANNEL_USERNAME")
 
 logging.basicConfig(level=logging.INFO)
 
@@ -26,7 +27,7 @@ async def start_command(message: types.Message):
     keyboard = InlineKeyboardMarkup(row_width=2)
     keyboard.add(
         InlineKeyboardButton("📥 Получить подарок", callback_data="get_gift"),
-        InlineKeyboardButton("📌 Подписаться", url=CHANNEL_LINK)
+        InlineKeyboardButton("📌 Подписаться", url=f"https://t.me/{CHANNEL_USERNAME}")
     )
     await message.answer("Привет! Подпишись и получи подарок 🎁", reply_markup=keyboard)
 
@@ -37,7 +38,7 @@ async def handle_gift_request(callback_query: types.CallbackQuery):
         await bot.send_message(user_id, f"Спасибо за подписку! Вот твой подарок 🎁:\n{GIFT_URL}")
     else:
         keyboard = InlineKeyboardMarkup().add(
-            InlineKeyboardButton("📌 Подписаться", url=CHANNEL_LINK)
+            InlineKeyboardButton("📌 Подписаться", url=f"https://t.me/{CHANNEL_USERNAME}")
         )
         await bot.send_message(user_id, "Похоже, ты ещё не подписан на канал. Подпишись и вернись за подарком 😉", reply_markup=keyboard)
     await bot.answer_callback_query(callback_query.id)
