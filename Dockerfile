@@ -10,5 +10,8 @@ COPY . .
 # Устанавливаем зависимости
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Открываем порт 8081 (важно для Northflank)
+EXPOSE 8081
+
 # Указываем команду запуска бота
 CMD ["python", "bot.py"]
