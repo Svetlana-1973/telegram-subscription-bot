@@ -55,4 +55,4 @@ def start():
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-    web.run_app(start(), port=int(os.getenv("PORT", 8080)))
+    web.run_app(start(), port=8081)
