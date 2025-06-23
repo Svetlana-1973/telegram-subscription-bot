@@ -6,8 +6,8 @@ from aiohttp import web
 
 API_TOKEN = os.getenv("BOT_TOKEN")
 CHANNEL_ID = os.getenv("CHANNEL_ID")
-GIFT_URL = os.getenv("GIFT_URL")
 CHANNEL_LINK = os.getenv("CHANNEL_LINK")
+GIFT_URL = os.getenv("GIFT_URL")
 CHANNEL_USERNAME = os.getenv("CHANNEL_USERNAME")
 
 logging.basicConfig(level=logging.INFO)
@@ -24,12 +24,12 @@ async def check_subscription(user_id):
 
 @dp.message_handler(commands=['start'])
 async def start_command(message: types.Message):
-    keyboard = InlineKeyboardMarkup(row_width=2)
+    keyboard = InlineKeyboardMarkup(row_width=1)
     keyboard.add(
-        InlineKeyboardButton("📥 Получить подарок", callback_data="get_gift"),
-        InlineKeyboardButton("📌 Подписаться", url=f"https://t.me/{CHANNEL_USERNAME}")
+        InlineKeyboardButton("📌 Подписаться", url=CHANNEL_LINK),
+        InlineKeyboardButton("📥 Получить подарок", callback_data="get_gift")
     )
-    await message.answer("Привет! Подпишись и получи подарок 🎁", reply_markup=keyboard)
+    await message.answer("Привет! Подпишись на канал и получи подарок 🎁", reply_markup=keyboard)
 
 @dp.callback_query_handler(lambda c: c.data == "get_gift")
 async def handle_gift_request(callback_query: types.CallbackQuery):
@@ -38,9 +38,9 @@ async def handle_gift_request(callback_query: types.CallbackQuery):
         await bot.send_message(user_id, f"Спасибо за подписку! Вот твой подарок 🎁:\n{GIFT_URL}")
     else:
         keyboard = InlineKeyboardMarkup().add(
-            InlineKeyboardButton("📌 Подписаться", url=f"https://t.me/{CHANNEL_USERNAME}")
+            InlineKeyboardButton("📌 Подписаться", url=CHANNEL_LINK)
         )
-        await bot.send_message(user_id, "Похоже, ты ещё не подписан на канал. Подпишись и вернись за подарком 😉", reply_markup=keyboard)
+        await bot.send_message(user_id, "Пожалуйста, подпишись на канал, чтобы получить подарок.", reply_markup=keyboard)
     await bot.answer_callback_query(callback_query.id)
 
 async def webhook_handler(request):
