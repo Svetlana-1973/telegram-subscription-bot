@@ -1,0 +1,15 @@
+version: 1
+meta:
+  environment: docker
+  toolchain:
+    name: docker
+    version: latest
+build:
+  dockerfile: Dockerfile
+  skip: false
+run:
+  image: ""
+  command: python
+  args:
+    - bot.py
+  containerPort: 80
