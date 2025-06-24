@@ -4,17 +4,15 @@ from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.utils import executor
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-# --- 1. Загрузка данных из файла .env ---
-# Бот будет читать свои настройки (токен, ID канала и т.д.) из файла .env
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHANNEL_ID = os.getenv("CHANNEL_ID")
 CHANNEL_USERNAME = os.getenv("CHANNEL_USERNAME")
-CHANNEL_LINK = os.getenv("CHANNEL_LINK") # Специальная ссылка для отслеживания статистики
+CHANNEL_LINK = os.getenv("CHANNEL_LINK") 
 GIFT_URL = os.getenv("GIFT_URL")
 
 if not all([BOT_TOKEN, CHANNEL_ID, CHANNEL_USERNAME, CHANNEL_LINK, GIFT_URL]):
     print("ОШИБКА: Один или несколько параметров в файле .env отсутствуют. Пожалуйста, проверьте файл .env.")
-    exit(1) # Завершаем работу, если нет важных данных
+    exit(1) 
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot)
@@ -33,8 +31,8 @@ async def handle_start(message: types.Message):
     user_id = message.from_user.id
 
     keyboard = InlineKeyboardMarkup()
-    button_subscribe = InlineKeyboardButton("👉 Подписаться", url=CHANNEL_LINK) # Ведет на спец. ссылку
-    button_get_gift = InlineKeyboardButton("🎁 Получить подарок", callback_data="get_gift") # Кнопка для получения подарка
+    button_subscribe = InlineKeyboardButton("👉 Подписаться", url=CHANNEL_LINK) 
+    button_get_gift = InlineKeyboardButton("🎁 Получить подарок", callback_data="get_gift") 
 
     keyboard.add(button_subscribe, button_get_gift)
 
@@ -47,7 +45,7 @@ async def handle_get_gift_button(call: types.CallbackQuery):
     if await is_subscribed(user_id):
        
         keyboard = InlineKeyboardMarkup()
-        keyboard.add(InlineKeyboardButton("⬇️ Скачать подарок", url=GIFT_URL)) # Кнопка для скачивания подарка
+        keyboard.add(InlineKeyboardButton("⬇️ Скачать подарок", url=GIFT_URL)) 
         await call.message.reply("Спасибо за подписку! Вот твой подарок 🎁", reply_markup=keyboard)
     else:
         await call.message.reply("Пожалуйста, подпишись на канал, чтобы получить подарок 🎁")
