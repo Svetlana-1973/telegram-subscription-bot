@@ -1,0 +1,16 @@
+---
+version: 1
+meta:
+  environment: docker
+  toolchain:
+    name: docker
+    version: latest
+build:
+  dockerfile: Dockerfile
+  skip: false
+run:
+  image: cr.yandex/crp2gf3gm8rv83kfkvet/amvera-svetlanapogodina73-telegram
+  command: python
+  args:
+    - bot.py
+  containerPort: 80
