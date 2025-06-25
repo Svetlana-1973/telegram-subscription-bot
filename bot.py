@@ -1,5 +1,4 @@
 import os
-import ssl
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -14,8 +13,6 @@ CHANNEL_USERNAME = os.getenv("CHANNEL_USERNAME")
 CHANNEL_LINK = os.getenv("CHANNEL_LINK")
 GIFT_URL = os.getenv("GIFT_URL")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
-SSL_KEY_PATH = os.getenv("SSL_KEY_PATH", "ssl/key.pem")
-SSL_CERT_PATH = os.getenv("SSL_CERT_PATH", "ssl/cert.pem")
 PORT = int(os.getenv("PORT", 3000))
 
 if not all([BOT_TOKEN, CHANNEL_ID, CHANNEL_USERNAME, CHANNEL_LINK, GIFT_URL, WEBHOOK_URL]):
@@ -53,13 +50,6 @@ async def handle_get_gift_button(call: types.CallbackQuery):
         await call.message.reply("Пожалуйста, подпишись на канал, чтобы получить подарок 🎁")
     await call.answer()
 
-async def on_startup(dp):
-    await bot.set_webhook(WEBHOOK_URL)
-    print(f"Webhook установлен на: {WEBHOOK_URL}")
-
-async def on_shutdown(dp):
-    print("Бот выключается.")
-
 async def handle(request):
     if request.method == "POST":
         data = await request.text()
@@ -70,15 +60,11 @@ async def handle(request):
         return web.Response(status=405)
 
 if __name__ == '__main__':
-    ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-    ssl_context.load_cert_chain(SSL_CERT_PATH, SSL_KEY_PATH)
-
     app = web.Application()
     app.router.add_post('/', handle)
 
     web.run_app(
         app,
         host='0.0.0.0',
-        port=PORT,
-        ssl_context=ssl_context
+        port=PORT
     )
