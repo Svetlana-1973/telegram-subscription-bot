@@ -1,7 +1,9 @@
 import os
+import ssl
+from aiohttp import web
 from aiogram import Bot, Dispatcher, types
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
-from aiogram.utils.executor import start_webhook
+
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -10,6 +12,8 @@ CHANNEL_USERNAME = os.getenv("CHANNEL_USERNAME")
 CHANNEL_LINK = os.getenv("CHANNEL_LINK")
 GIFT_URL = os.getenv("GIFT_URL")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
+SSL_KEY_PATH = os.getenv("SSL_KEY_PATH", "ssl/key.pem")       # путь к приватному ключу SSL
+SSL_CERT_PATH = os.getenv("SSL_CERT_PATH", "ssl/cert.pem")    # путь к сертификату SSL
 
 if not all([BOT_TOKEN, CHANNEL_ID, CHANNEL_USERNAME, CHANNEL_LINK, GIFT_URL, WEBHOOK_URL]):
     print("ОШИБКА: Не все переменные окружения заданы.")
@@ -53,13 +57,25 @@ async def on_startup(dp):
 async def on_shutdown(dp):
     print("Бот выключается.")
 
+async def handle(request):
+    if request.method == "POST":
+        data = await request.text()
+        update = types.Update.de_json(data)
+        await dp.process_update(update)
+        return web.Response(text="ok")
+    else:
+        return web.Response(status=405)
+
 if __name__ == '__main__':
-    start_webhook(
-        dispatcher=dp,
-        webhook_path='/',
-        on_startup=on_startup,
-        on_shutdown=on_shutdown,
-        skip_updates=True,
+    ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    ssl_context.load_cert_chain(SSL_CERT_PATH, SSL_KEY_PATH)
+
+    app = web.Application()
+    app.router.add_post('/', handle)
+
+    web.run_app(
+        app,
         host='0.0.0.0',
-        port=int(os.environ.get("PORT", 80))
+        port=int(os.environ.get("PORT", 443)),
+        ssl_context=ssl_context
     )
