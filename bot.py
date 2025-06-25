@@ -1,9 +1,11 @@
 import os
 import ssl
+from dotenv import load_dotenv
+load_dotenv()
+
 from aiohttp import web
 from aiogram import Bot, Dispatcher, types
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
-
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -12,8 +14,8 @@ CHANNEL_USERNAME = os.getenv("CHANNEL_USERNAME")
 CHANNEL_LINK = os.getenv("CHANNEL_LINK")
 GIFT_URL = os.getenv("GIFT_URL")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
-SSL_KEY_PATH = os.getenv("SSL_KEY_PATH", "ssl/key.pem")       # путь к приватному ключу SSL
-SSL_CERT_PATH = os.getenv("SSL_CERT_PATH", "ssl/cert.pem")    # путь к сертификату SSL
+SSL_KEY_PATH = os.getenv("SSL_KEY_PATH", "ssl/key.pem")
+SSL_CERT_PATH = os.getenv("SSL_CERT_PATH", "ssl/cert.pem")
 
 if not all([BOT_TOKEN, CHANNEL_ID, CHANNEL_USERNAME, CHANNEL_LINK, GIFT_URL, WEBHOOK_URL]):
     print("ОШИБКА: Не все переменные окружения заданы.")
