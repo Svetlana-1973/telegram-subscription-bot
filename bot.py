@@ -16,6 +16,7 @@ GIFT_URL = os.getenv("GIFT_URL")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 SSL_KEY_PATH = os.getenv("SSL_KEY_PATH", "ssl/key.pem")
 SSL_CERT_PATH = os.getenv("SSL_CERT_PATH", "ssl/cert.pem")
+PORT = int(os.getenv("PORT", 3000))
 
 if not all([BOT_TOKEN, CHANNEL_ID, CHANNEL_USERNAME, CHANNEL_LINK, GIFT_URL, WEBHOOK_URL]):
     print("ОШИБКА: Не все переменные окружения заданы.")
@@ -78,6 +79,6 @@ if __name__ == '__main__':
     web.run_app(
         app,
         host='0.0.0.0',
-        port=int(os.environ.get("PORT", 443)),
+        port=PORT,
         ssl_context=ssl_context
     )
