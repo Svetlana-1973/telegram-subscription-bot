@@ -50,6 +50,10 @@ async def handle_get_gift_button(call: types.CallbackQuery):
         await call.message.reply("Пожалуйста, подпишись на канал, чтобы получить подарок 🎁")
     await call.answer()
 
+async def on_startup(dp):
+    await bot.set_webhook(WEBHOOK_URL)
+    print(f"Webhook установлен на: {WEBHOOK_URL}")
+
 async def handle(request):
     if request.method == "POST":
         data = await request.text()
@@ -62,6 +66,11 @@ async def handle(request):
 if __name__ == '__main__':
     app = web.Application()
     app.router.add_post('/', handle)
+
+    async def on_startup_wrapper(app):
+        await on_startup(dp)
+
+    app.on_startup.append(on_startup_wrapper)
 
     web.run_app(
         app,
