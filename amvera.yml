@@ -1,3 +1,4 @@
+---
 version: 1
 meta:
   environment: docker
@@ -8,7 +9,7 @@ build:
   dockerfile: Dockerfile
   skip: false
 run:
-  image: ""
+  image: svetlanapogodina/telegram-bot-subscription
   command: python
   args:
     - bot.py
